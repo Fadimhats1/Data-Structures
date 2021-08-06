@@ -213,34 +213,40 @@ node *travNode(node *root){
     return curr;
 }
 
-node *deleteNode(node *root, char str[]){
-    if(root){
-        if(strcmp(root->str, str) > 0){
-            root->left = deleteNode(root->left, str);
-        }else if(strcmp(root->str, str) < 0){
-            root->right = deleteNode(root->right, str);
+node *deleteNode(node *roots, char str[], bool flag){
+    if(roots){
+        if(strcmp(roots->str, str) > 0){
+            roots->left = deleteNode(roots->left, str, flag);
+        }else if(strcmp(roots->str, str) < 0){
+            roots->right = deleteNode(roots->right, str, flag);
         }else{
+            if(!flag){
+                while(!(!(roots->root->left) && !(roots->root->right))){
+                    roots->root = deleteSubNode(roots->root, roots->root->str);
+                }
+            }
+            roots->root = NULL;
             node *temp = NULL;
-            if(!(root->left)){
-                temp = root->right;
-                root->right = NULL;
-                free(root);
+            if(!(roots->left)){
+                temp = roots->right;
+                roots->right = NULL;
+                free(roots);
                 return temp;
-            }else if(!(root->right)){
-                temp = root->left;
-                root->left = NULL;
-                free(root);
+            }else if(!(roots->right)){
+                temp = roots->left;
+                roots->left = NULL;
+                free(roots);
                 return temp;
             }else{
-                temp = travNode(root->left);
-                strcpy(root->str, temp->str);
-                root->root = temp->root;
-                root->left = deleteNode(root->left, temp->str);
+                temp = travNode(roots->left);
+                strcpy(roots->str, temp->str);
+                roots->root = temp->root;
+                roots->left = deleteNode(roots->left, temp->str, true);
             }
         }
-        return rotationNode(root);
+        return rotationNode(roots);
     }else{
-        return root;
+        return roots;
     }
 }
 
@@ -287,8 +293,9 @@ int main(){
     
     printNode(root);
     puts("");
+    bool flag = false;
 
-    root = deleteNode(root, "D");
+    root = deleteNode(root, "D", flag);
     // root = deleteNode(root, "B");
     // root = deleteNode(root, "V");
     // root = deleteNode(root, "R");

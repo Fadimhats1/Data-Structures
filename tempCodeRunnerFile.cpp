@@ -1,1 +1,1 @@
-root = deleteNode(root, "D");
+oot->left) && !(roots->root->right
